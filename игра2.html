@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Финансовая игра: План к собственной квартире</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #f72585;
+            --success: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        
+        #app {
+            max-width: 100%;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .screen {
+            display: none;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 20px;
+            width: 100%;
+            position: relative;
+        }
+        
+        .active {
+            display: flex;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 20px 0;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+        }
+        
+        h1 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+        
+        .subtitle {
+            color: var(--secondary);
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        .scenario {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+        
+        .question-card {
+            background-color: var(--card-bg);
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        h2 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            font-size: 1.4rem;
+        }
+        
+        h2 i {
+            margin-right: 10px;
+            font-size: 1.6rem;
+        }
+        
+        .question-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding-bottom: 10px;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 1rem;
+            background: var(--light);
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        .btn {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+            display: block;
+            width: 100%;
+            margin-top: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 10;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(to right, #6c757d, #495057);
+        }
+        
+        .btn-success {
+            background: linear-gradient(to right, #4cc9f0, #4361ee);
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: var(--light);
+            border-radius: 12px;
+            border-left: 5px solid var(--primary);
+        }
+        
+        .result h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .budget-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.9rem;
+        }
+        
+        .budget-table th, .budget-table td {
+            padding: 12px 8px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .budget-table th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+        
+        .budget-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        .budget-table input {
+            width: 80px;
+            padding: 8px;
+            text-align: right;
+            font-size: 0.9rem;
+        }
+        
+        .highlight {
+            background-color: #e7f5ff;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 10px 0;
+            border-left: 4px solid var(--success);
+        }
+        
+        .warning {
+            background-color: #ffe6e6;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 10px 0;
+            border-left: 4px solid var(--accent);
+        }
+        
+        .success {
+            background-color: #e6ffe6;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 10px 0;
+            border-left: 4px solid #28a745;
+        }
+        
+        .user-input-section {
+            background-color: #f0f8ff;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+        }
+        
+        .outcome {
+            margin-top: 20px;
+            padding: 25px;
+            border-radius: 16px;
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            box-shadow: var(--shadow);
+        }
+        
+        .good-outcome {
+            background: linear-gradient(135deg, #4cc9f0, #4361ee);
+            color: white;
+        }
+        
+        .bad-outcome {
+            background: linear-gradient(135deg, #f72585, #b5179e);
+            color: white;
+        }
+        
+        .progress-container {
+            width: 100%;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            margin: 20px 0;
+            height: 12px;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(to right, var(--success), var(--primary));
+            width: 0%;
+            transition: width 0.5s ease-in-out;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            gap: 10px;
+        }
+        
+        .nav-btn {
+            flex: 1;
+            padding: 14px;
+        }
+        
+        .score-display {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 10px 0;
+            color: var(--primary);
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .stat-item {
+            flex: 1;
+            padding: 15px;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--secondary);
+        }
+        
+        .home-screen {
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+        }
+        
+        .home-content {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            color: var(--dark);
+            max-width: 90%;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .home-icon {
+            font-size: 4rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .home-title {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        .home-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: var(--secondary);
+        }
+        
+        .home-btn {
+            font-size: 1.3rem;
+            padding: 18px 30px;
+            margin: 10px 0;
+            min-height: 70px;
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            h2 {
+                font-size: 1.2rem;
+            }
+            
+            .budget-table {
+                font-size: 0.8rem;
+            }
+            
+            .budget-table input {
+                width: 60px;
+                padding: 5px;
+            }
+            
+            .home-title {
+                font-size: 1.8rem;
+            }
+            
+            .home-subtitle {
+                font-size: 1rem;
+            }
+            
+            .home-content {
+                padding: 20px;
+            }
+            
+            .btn {
+                min-height: 55px;
+                padding: 14px 20px;
+            }
+        }
+        
+        .question-counter {
+            text-align: center;
+            margin: 10px 0;
+            font-weight: bold;
+            color: var(--secondary);
+        }
+        
+        .completion-message {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.2rem;
+        }
+        
+        .final-stats {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+        
+        .final-stat {
+            flex: 0 0 45%;
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 10px 0;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+        
+        .final-stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .final-stat-label {
+            font-size: 0.9rem;
+            color: var(--secondary);
+        }
+        
+        /* Улучшения для мобильных устройств */
+        .touch-area {
+            min-height: 44px;
+            min-width: 44px;
+        }
+        
+        /* Убедимся, что контент не перекрывает кнопки */
+        .question-card {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Улучшение отзывчивости кнопок */
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Главный экран -->
+        <div id="home-screen" class="screen active">
+            <div class="home-content">
+                <div class="home-icon">
+                    <i class="fas fa-piggy-bank"></i>
+                </div>
+                <h1 class="home-title">Финансовая игра</h1>
+                <p class="home-subtitle">План к собственной квартире</p>
+                <p style="margin-bottom: 30px; text-align: left;">
+                    Проверьте свои финансовые навыки! Сможете ли вы накопить на квартиру за 5 лет, правильно распределяя бюджет и справляясь с неожиданными ситуациями?
+                </p>
+                <button class="btn home-btn touch-area" onclick="showScreen('scenario-screen')">
+                    <i class="fas fa-play"></i> Начать игру
+                </button>
+                <button class="btn btn-secondary home-btn touch-area" onclick="showScreen('instructions-screen')">
+                    <i class="fas fa-info-circle"></i> Как играть
+                </button>
+            </div>
+        </div>
+        
+        <!-- Экран инструкций -->
+        <div id="instructions-screen" class="screen">
+            <header>
+                <h1>Как играть</h1>
+            </header>
+            <div class="question-card">
+                <div class="question-content">
+                    <div class="highlight">
+                        <h3><i class="fas fa-graduation-cap"></i> Цель игры</h3>
+                        <p>Накопить на квартиру стоимостью 6 000 000 ₽ за 5 лет, правильно управляя своими финансами.</p>
+                    </div>
+                    
+                    <div class="user-input-section">
+                        <h3><i class="fas fa-list-ol"></i> Этапы игры</h3>
+                        <ol style="padding-left: 20px; margin-top: 10px;">
+                            <li style="margin-bottom: 10px;"><strong>Бюджет:</strong> Распределите доход по статьям расходов</li>
+                            <li style="margin-bottom: 10px;"><strong>Кризис:</strong> Создайте антикризисный план при потере работы</li>
+                            <li style="margin-bottom: 10px;"><strong>Накопления:</strong> Проверьте, достаточно ли вы откладываете на квартиру</li>
+                            <li style="margin-bottom: 10px;"><strong>Ипотека:</strong> Сравните накопление с ипотекой</li>
+                            <li style="margin-bottom: 10px;"><strong>Новый план:</strong> Скорректируйте финансовый план при увеличении дохода</li>
+                        </ol>
+                    </div>
+                    
+                    <div class="warning">
+                        <h3><i class="fas fa-star"></i> Система оценки</h3>
+                        <p>За каждый этап вы получаете до 10 баллов. Чем лучше ваши финансовые решения, тем выше итоговый результат!</p>
+                    </div>
+                </div>
+                
+                <div class="navigation">
+                    <button class="btn nav-btn touch-area" onclick="showScreen('home-screen')">
+                        <i class="fas fa-arrow-left"></i> Назад
+                    </button>
+                    <button class="btn nav-btn touch-area" onclick="showScreen('scenario-screen')">
+                        Начать <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Экран сценария -->
+        <div id="scenario-screen" class="screen">
+            <header>
+                <h1>Сценарий игры</h1>
+            </header>
+            <div class="question-card">
+                <div class="question-content">
+                    <div class="scenario">
+                        <h2><i class="fas fa-user"></i> Ваш персонаж</h2>
+                        <p>Вы - начинающий специалист (25 лет), живете в крупном городе. У вас только что появилась работа с окладом 85 000 ₽ в месяц (на руки).</p>
+                    </div>
+                    
+                    <div class="scenario">
+                        <h2><i class="fas fa-home"></i> Ваша цель</h2>
+                        <p>Накопить на собственную квартиру стоимостью 6 000 000 ₽ через 5 лет. При этом вы хотите жить комфортно и не отказывать себе в базовых нуждах.</p>
+                    </div>
+                    
+                    <div class="scenario">
+                        <h2><i class="fas fa-exclamation-triangle"></i> Условия</h2>
+                        <ul style="padding-left: 20px; margin-top: 10px;">
+                            <li style="margin-bottom: 8px;">Нет долгов</li>
+                            <li style="margin-bottom: 8px;">Инфляция 7% в год</li>
+                            <li style="margin-bottom: 8px;">Минимум 20% дохода на накопления</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="navigation">
+                    <button class="btn btn-secondary nav-btn touch-area" onclick="showScreen('instructions-screen')">
+                        <i class="fas fa-arrow-left"></i> Назад
+                    </button>
+                    <button class="btn nav-btn touch-area" onclick="startGame()">
+                        Начать игру <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Вопрос 1 -->
+        <div id="question-1" class="screen">
+            <header>
+                <h1>Вопрос 1: Бюджет</h1>
+                <p class="subtitle">Распределите ваш месячный бюджет</p>
+            </header>
+            <div class="question-card">
+                <div class="question-content">
+                    <div class="question-counter">Вопрос 1 из 5</div>
+                    
+                    <div class="user-input-section">
+                        <h3><i class="fas fa-money-bill-wave"></i> Ваш доход: 85 000 ₽</h3>
+                        <p>Остаток для распределения: <strong id="remaining-budget">85 000 ₽</strong></p>
+                        
+                        <table class="budget-table">
+                            <thead>
+                                <tr>
+                                    <th>Статья</th>
+                                    <th>Рекомендация</th>
+                                    <th>Ваша сумма</th>
+                                </tr>
+                            </thead>
+                            <tbody id="budget-table-body">
+                                <tr>
+                                    <td>Аренда</td>
+                                    <td>25-35%</td>
+                                    <td><input type="number" id="rent" value="25500" min="0" onchange="updateBudget()"></td>
+                                </tr>
+                                <tr>
+                                    <td>Коммуналка</td>
+                                    <td>4-6%</td>
+                                    <td><input type="number" id="utilities" value="4250" min="0" onchange="updateBudget()"></td>
+                                </tr>
+                                <tr>
+                                    <td>Транспорт</td>
+                                    <td>7-10%</td>
+                                    <td><input type="number" id="transport" value="6800" min="0" onchange="updateBudget()"></td>
+                                </tr>
+                                <tr>
+                                    <td>Еда</td>
+                                    <td>15-25%</td>
+                                    <td><input type="number" id="food" value="17000" min="0" onchange="updateBudget()"></td>
+                                </tr>
+                                <tr>
+                                    <td>Связь</td>
+                                    <td>2-4%</td>
+                                    <td><input type="number" id="communication" value="2550" min="0" onchange="updateBudget()"></td>
+                                </tr>
+                                <tr>
+                                    <td>Одежда</td>
+                                    <td>4-7%</td>
+                                    <td><input type="number" id="clothing" value="4250" min="0" onchange="updateBudget()"></td>
+                                </tr>
+                                <tr>
+                                    <td>Развлечения</td>
+                                    <td>8-12%</td>
+                                    <td><input type="number" id="entertainment" value="8500" min="0" onchange="updateBudget()"></td>
+                                </tr>
+                                <tr>
+                                    <td>Подушка безопасности</td>
+                                    <td>10-15%</td>
+                                    <td><input type="number" id="safety-cushion" value="8500" min="0" onchange="updateBudget()"></td>
+                                </tr>
+                                <tr>
+                                    <td>Накопления</td>
+                                    <td>минимум 20%</td>
+                                    <td><input type="number" id="savings" value="7650" min="0" onchange="updateBudget()"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div id="budget-result" class="result">
+                        <!-- Результаты будут отображаться здесь -->
+                    </div>
+                </div>
+                
+                <div class="navigation">
+                    <button class="btn btn-secondary nav-btn touch-area" onclick="showScreen('scenario-screen')">
+                        <i class="fas fa-arrow-left"></i> Назад
+                    </button>
+                    <button class="btn nav-btn touch-area" onclick="checkBudget()">
+                        Проверить <i class="fas fa-check"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Вопрос 2 -->
+        <div id="question-2" class="screen">
+            <header>
+                <h1>Вопрос 2: Кризис</h1>
+                <p class="subtitle">Создайте антикризисный план</p>
+            </header>
+            <div class="question-card">
+                <div class="question-content">
+                    <div class="question-counter">Вопрос 2 из 5</div>
+                    
+                    <div class="scenario">
+                        <p>Через 4 месяца вас сокращают с работы. У вас есть финансовая подушка и небольшие накопления.</p>
+                    </div>
+                    
+                    <div class="user-input-section">
+                        <h3><i class="fas fa-first-aid"></i> Ваш антикризисный план</h3>
+                        
+                        <div class="input-group">
+                            <label for="job-search-months">Сколько месяцев планируете искать работу?</label>
+                            <input type="number" id="job-search-months" value="2" min="1" max="6">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="entertainment-cut">На сколько % сократите расходы на развлечения?</label>
+                            <input type="number" id="entertainment-cut" value="70" min="0" max="100">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="clothing-cut">На сколько % сократите расходы на одежду?</label>
+                            <input type="number" id="clothing-cut" value="50" min="0" max="100">
+                        </div>
+                    </div>
+                    
+                    <div id="crisis-result" class="result">
+                        <!-- Результаты будут отображаться здесь -->
+                    </div>
+                </div>
+                
+                <div class="navigation">
+                    <button class="btn btn-secondary nav-btn touch-area" onclick="showScreen('question-1')">
+                        <i class="fas fa-arrow-left"></i> Назад
+                    </button>
+                    <button class="btn nav-btn touch-area" onclick="checkCrisisPlan()">
+                        Проверить <i class="fas fa-check"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Вопрос 3 -->
+        <div id="question-3" class="screen">
+            <header>
+                <h1>Вопрос 3: Накопления</h1>
+                <p class="subtitle">План на квартиру</p>
+            </header>
+            <div class="question-card">
+                <div class="question-content">
+                    <div class="question-counter">Вопрос 3 из 5</div>
+                    
+                    <div class="user-input-section">
+                        <h3><i class="fas fa-home"></i> Ваш план накоплений</h3>
+                        
+                        <div class="input-group">
+                            <label for="apartment-price">Стоимость квартиры (₽)</label>
+                            <input type="number" id="apartment-price" value="6000000" min="0">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="years">Срок накопления (лет)</label>
+                            <input type="number" id="years" value="5" min="1">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="deposit-rate">Доходность депозита (% годовых)</label>
+                            <input type="number" id="deposit-rate" value="9" min="0" step="0.1">
+                        </div>
+                    </div>
+                    
+                    <div id="savings-result" class="result">
+                        <!-- Результаты будут отображаться здесь -->
+                    </div>
+                </div>
+                
+                <div class="navigation">
+                    <button class="btn btn-secondary nav-btn touch-area" onclick="showScreen('question-2')">
+                        <i class="fas fa-arrow-left"></i> Назад
+                    </button>
+                    <button class="btn nav-btn touch-area" onclick="checkSavingsPlan()">
+                        Проверить <i class="fas fa-check"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Вопрос 4 -->
+        <div id="question-4" class="screen">
+            <header>
+                <h1>Вопрос 4: Ипотека</h1>
+                <p class="subtitle">Сравнение с накоплением</p>
+            </header>
+            <div class="question-card">
+                <div class="question-content">
+                    <div class="question-counter">Вопрос 4 из 5</div>
+                    
+                    <div class="scenario">
+                        <p>Вам предлагают ипотеку на квартиру (6 млн ₽) с первоначальным взносом 15%, сроком 20 лет, ставка 13% годовых.</p>
+                    </div>
+                    
+                    <div class="user-input-section">
+                        <h3><i class="fas fa-balance-scale"></i> Ваш выбор</h3>
+                        <p>Какой вариант вы предпочитаете?</p>
+                        
+                        <div style="display: flex; gap: 10px; margin: 15px 0;">
+                            <button class="btn touch-area" onclick="selectOption('savings')" style="flex: 1;">
+                                <i class="fas fa-piggy-bank"></i> Накопление
+                            </button>
+                            <button class="btn touch-area" onclick="selectOption('mortgage')" style="flex: 1;">
+                                <i class="fas fa-home"></i> Ипотека
+                            </button>
+                        </div>
+                        
+                        <div id="mortgage-details" style="display: none; margin-top: 15px;">
+                            <div class="input-group">
+                                <label for="down-payment">Первоначальный взнос (₽)</label>
+                                <input type="number" id="down-payment" value="900000" min="0">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="mortgage-years">Срок ипотеки (лет)</label>
+                                <input type="number" id="mortgage-years" value="20" min="5" max="30">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="mortgage-result" class="result">
+                        <!-- Результаты будут отображаться здесь -->
+                    </div>
+                </div>
+                
+                <div class="navigation">
+                    <button class="btn btn-secondary nav-btn touch-area" onclick="showScreen('question-3')">
+                        <i class="fas fa-arrow-left"></i> Назад
+                    </button>
+                    <button class="btn nav-btn touch-area" onclick="checkMortgageDecision()">
+                        Проверить <i class="fas fa-check"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Вопрос 5 -->
+        <div id="question-5" class="screen">
+            <header>
+                <h1>Вопрос 5: Новый план</h1>
+                <p class="subtitle">Корректировка при увеличении дохода</p>
+            </header>
+            <div class="question-card">
+                <div class="question-content">
+                    <div class="question-counter">Вопрос 5 из 5</div>
+                    
+                    <div class="scenario">
+                        <p>Вам удалось устроиться на новую работу с доходом 120 000 ₽/мес (на руки) через 5 месяцев.</p>
+                    </div>
+                    
+                    <div class="user-input-section">
+                        <h3><i class="fas fa-chart-line"></i> Ваш новый финансовый план</h3>
+                        
+                        <div class="input-group">
+                            <label for="new-income">Новый доход (₽/мес)</label>
+                            <input type="number" id="new-income" value="120000" min="0">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="new-savings-percent">Новый % накоплений</label>
+                            <input type="number" id="new-savings-percent" value="15" min="0" max="50">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="investment-option">Рассматриваете инвестиции?</label>
+                            <select id="investment-option">
+                                <option value="no">Нет, только депозит</option>
+                                <option value="conservative">Консервативные (облигации)</option>
+                                <option value="balanced">Сбалансированные (смешанные)</option>
+                                <option value="aggressive">Агрессивные (акции)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div id="new-plan-result" class="result">
+                        <!-- Результаты будут отображаться здесь -->
+                    </div>
+                </div>
+                
+                <div class="navigation">
+                    <button class="btn btn-secondary nav-btn touch-area" onclick="showScreen('question-4')">
+                        <i class="fas fa-arrow-left"></i> Назад
+                    </button>
+                    <button class="btn nav-btn touch-area" onclick="checkNewPlan()">
+                        Завершить <i class="fas fa-flag-checkered"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Финальный экран -->
+        <div id="final-screen" class="screen">
+            <header>
+                <h1>Результаты игры</h1>
+                <p class="subtitle">Ваш финансовый успех</p>
+            </header>
+            <div class="question-card">
+                <div class="question-content">
+                    <div id="final-outcome" class="outcome">
+                        <!-- Итоговый результат будет отображаться здесь -->
+                    </div>
+                    
+                    <div class="completion-message">
+                        <p>Вы завершили финансовую игру! Надеемся, вы узнали что-то новое о управлении личными финансами.</p>
+                    </div>
+                    
+                    <div class="final-stats">
+                        <div class="final-stat">
+                            <div class="final-stat-value" id="final-score">0</div>
+                            <div class="final-stat-label">Общий балл</div>
+                        </div>
+                        <div class="final-stat">
+                            <div class="final-stat-value" id="success-rate">0%</div>
+                            <div class="final-stat-label">Успешность</div>
+                        </div>
+                        <div class="final-stat">
+                            <div class="final-stat-value" id="budget-score">0</div>
+                            <div class="final-stat-label">Бюджет</div>
+                        </div>
+                        <div class="final-stat">
+                            <div class="final-stat-value" id="crisis-score">0</div>
+                            <div class="final-stat-label">Кризис-план</div>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-container">
+                        <div class="progress-bar" id="final-progress"></div>
+                    </div>
+                    
+                    <div class="highlight">
+                        <h3><i class="fas fa-lightbulb"></i> Рекомендации</h3>
+                        <p id="recommendations">На основе ваших результатов здесь появятся персонализированные рекомендации по улучшению финансовой грамотности.</p>
+                    </div>
+                </div>
+                
+                <div class="navigation">
+                    <button class="btn btn-secondary nav-btn touch-area" onclick="showScreen('question-5')">
+                        <i class="fas fa-arrow-left"></i> Назад
+                    </button>
+                    <button class="btn nav-btn touch-area" onclick="showScreen('home-screen')">
+                        <i class="fas fa-redo"></i> Начать заново
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Глобальные переменные для хранения результатов
+        let budgetScore = 0;
+        let crisisScore = 0;
+        let savingsScore = 0;
+        let mortgageScore = 0;
+        let newPlanScore = 0;
+        
+        // Функции для навигации
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+            
+            // Прокрутка вверх при смене экрана
+            window.scrollTo(0, 0);
+        }
+        
+        function startGame() {
+            showScreen('question-1');
+            updateBudget(); // Инициализация бюджета
+        }
+        
+        // Вопрос 1: Обновление бюджета
+        function updateBudget() {
+            const income = 85000;
+            const rent = parseFloat(document.getElementById('rent').value) || 0;
+            const utilities = parseFloat(document.getElementById('utilities').value) || 0;
+            const transport = parseFloat(document.getElementById('transport').value) || 0;
+            const food = parseFloat(document.getElementById('food').value) || 0;
+            const communication = parseFloat(document.getElementById('communication').value) || 0;
+            const clothing = parseFloat(document.getElementById('clothing').value) || 0;
+            const entertainment = parseFloat(document.getElementById('entertainment').value) || 0;
+            const safetyCushion = parseFloat(document.getElementById('safety-cushion').value) || 0;
+            const savings = parseFloat(document.getElementById('savings').value) || 0;
+            
+            // Рассчитываем остаток
+            const total = rent + utilities + transport + food + communication + clothing + entertainment + safetyCushion + savings;
+            const remaining = income - total;
+            document.getElementById('remaining-budget').textContent = remaining.toFixed(0) + ' ₽';
+            
+            // Подсвечиваем остаток
+            if (remaining < 0) {
+                document.getElementById('remaining-budget').style.color = '#f72585';
+            } else if (remaining > 0) {
+                document.getElementById('remaining-budget').style.color = '#4cc9f0';
+            } else {
+                document.getElementById('remaining-budget').style.color = 'inherit';
+            }
+        }
+        
+        // Вопрос 1: Проверка бюджета
+        function checkBudget() {
+            const income = 85000;
+            const rent = parseFloat(document.getElementById('rent').value) || 0;
+            const utilities = parseFloat(document.getElementById('utilities').value) || 0;
+            const transport = parseFloat(document.getElementById('transport').value) || 0;
+            const food = parseFloat(document.getElementById('food').value) || 0;
+            const communication = parseFloat(document.getElementById('communication').value) || 0;
+            const clothing = parseFloat(document.getElementById('clothing').value) || 0;
+            const entertainment = parseFloat(document.getElementById('entertainment').value) || 0;
+            const safetyCushion = parseFloat(document.getElementById('safety-cushion').value) || 0;
+            const savings = parseFloat(document.getElementById('savings').value) || 0;
+            
+            const total = rent + utilities + transport + food + communication + clothing + entertainment + safetyCushion + savings;
+            const savingsPercent = (savings / income) * 100;
+            
+            let resultHTML = '<h3><i class="fas fa-chart-pie"></i> Результат проверки бюджета:</h3>';
+            
+            // Проверяем общую сумму
+            if (total > income) {
+                resultHTML += '<div class="warning"><i class="fas fa-exclamation-triangle"></i> Внимание: вы превысили свой доход на ' + (total - income).toFixed(0) + ' ₽!</div>';
+                budgetScore = 0;
+            } else if (total < income) {
+                resultHTML += '<div class="warning"><i class="fas fa-info-circle"></i> Вы не распределили ' + (income - total).toFixed(0) + ' ₽. Рекомендуется добавить эти средства в накопления или подушку безопасности.</div>';
+                budgetScore = 3;
+            } else {
+                resultHTML += '<div class="success"><i class="fas fa-check-circle"></i> Бюджет сбалансирован: 100% дохода распределено.</div>';
+                budgetScore = 5;
+            }
+            
+            // Проверяем накопления
+            if (savingsPercent < 20) {
+                resultHTML += '<div class="warning"><i class="fas fa-exclamation-triangle"></i> Внимание: вы откладываете только ' + savingsPercent.toFixed(0) + '% от дохода. Рекомендуется минимум 20% для достижения финансовых целей.</div>';
+                budgetScore = Math.max(budgetScore - 2, 0);
+            } else {
+                resultHTML += '<div class="success"><i class="fas fa-check-circle"></i> Отлично! Вы откладываете ' + savingsPercent.toFixed(0) + '% от дохода.</div>';
+                budgetScore += 2;
+            }
+            
+            // Проверяем подушку безопасности
+            const safetyPercent = (safetyCushion / income) * 100;
+            if (safetyPercent < 10) {
+                resultHTML += '<div class="warning"><i class="fas fa-exclamation-triangle"></i> Подушка безопасности (' + safetyPercent.toFixed(0) + '%) маловата. Рекомендуется 10-15%.</div>';
+                budgetScore = Math.max(budgetScore - 1, 0);
+            } else if (safetyPercent > 15) {
+                resultHTML += '<div class="warning"><i class="fas fa-info-circle"></i> Подушка безопасности (' + safetyPercent.toFixed(0) + '%) слишком велика. Часть этих средств можно направить в накопления.</div>';
+            } else {
+                resultHTML += '<div class="success"><i class="fas fa-check-circle"></i> Подушка безопасности (' + safetyPercent.toFixed(0) + '%) на хорошем уровне.</div>';
+                budgetScore += 1;
+            }
+            
+            document.getElementById('budget-result').innerHTML = resultHTML;
+            
+            // Переходим к следующему вопросу после проверки
+            setTimeout(() => {
+                showScreen('question-2');
+            }, 2000);
+        }
+        
+        // Вопрос 2: Проверка антикризисного плана
+        function checkCrisisPlan() {
+            const jobSearchMonths = parseFloat(document.getElementById('job-search-months').value) || 0;
+            const entertainmentCut = parseFloat(document.getElementById('entertainment-cut').value) || 0;
+            const clothingCut = parseFloat(document.getElementById('clothing-cut').value) || 0;
+            
+            let resultHTML = '<h3><i class="fas fa-first-aid"></i> Результат антикризисного плана:</h3>';
+            
+            // Оцениваем план поиска работы
+            if (jobSearchMonths <= 2) {
+                resultHTML += '<div class="success"><i class="fas fa-check-circle"></i> Реалистичный срок поиска работы: ' + jobSearchMonths + ' месяцев.</div>';
+                crisisScore = 5;
+            } else if (jobSearchMonths <= 4) {
+                resultHTML += '<div class="highlight"><i class="fas fa-info-circle"></i> Срок поиска работы ' + jobSearchMonths + ' месяцев приемлем, но лучше иметь план на 2-3 месяца.</div>';
+                crisisScore = 3;
+            } else {
+                resultHTML += '<div class="warning"><i class="fas fa-exclamation-triangle"></i> Срок поиска работы ' + jobSearchMonths + ' месяцев слишком долгий. Риск исчерпания подушки безопасности.</div>';
+                crisisScore = 1;
+            }
+            
+            // Оцениваем сокращение расходов
+            if (entertainmentCut >= 70 && clothingCut >= 50) {
+                resultHTML += '<div class="success"><i class="fas fa-check-circle"></i> Хорошее сокращение расходов на развлечения и одежду.</div>';
+                crisisScore += 3;
+            } else if (entertainmentCut >= 50 && clothingCut >= 30) {
+                resultHTML += '<div class="highlight"><i class="fas fa-info-circle"></i> Умеренное сокращение расходов. В кризисной ситуации можно сократить больше.</div>';
+                crisisScore += 2;
+            } else {
+                resultHTML += '<div class="warning"><i class="fas fa-exclamation-triangle"></i> Недостаточное сокращение расходов. В кризисной ситуации необходимо урезать необязательные траты.</div>';
+                crisisScore += 0;
+            }
+            
+            // Расчет подушки безопасности
+            const income = 85000;
+            const monthlySavings = income * 0.09; // 9% от дохода
+            const safetyCushion = income * 0.1; // 10% от дохода
+            
+            const totalReserve = (monthlySavings + safetyCushion) * 4; // За 4 месяца
+            const reducedExpenses = income * 0.7; // Сокращенные расходы (70% от дохода)
+            const monthsCovered = totalReserve / reducedExpenses;
+            
+            resultHTML += '<div class="highlight">';
+            resultHTML += '<p><i class="fas fa-shield-alt"></i> Вашей подушки безопасности хватит на ' + monthsCovered.toFixed(1) + ' месяцев при сокращенных расходах.</p>';
+            
+            if (monthsCovered >= jobSearchMonths) {
+                resultHTML += '<p>Этого достаточно для поиска работы в течение ' + jobSearchMonths + ' месяцев.</p>';
+                crisisScore += 2;
+            } else {
+                resultHTML += '<p>Этого НЕ достаточно для поиска работы в течение ' + jobSearchMonths + ' месяцев.</p>';
+            }
+            resultHTML += '</div>';
+            
+            document.getElementById('crisis-result').innerHTML = resultHTML;
+            
+            // Переходим к следующему вопросу после проверки
+            setTimeout(() => {
+                showScreen('question-3');
+            }, 2000);
+        }
+        
+        // Вопрос 3: Проверка плана накоплений
+        function checkSavingsPlan() {
+            const apartmentPrice = parseFloat(document.getElementById('apartment-price').value) || 0;
+            const years = parseFloat(document.getElementById('years').value) || 0;
+            const annualRate = parseFloat(document.getElementById('deposit-rate').value) / 100 || 0;
+            
+            const monthlyRate = annualRate / 12;
+            const months = years * 12;
+            
+            // Формула аннуитетного платежа для накоплений
+            const requiredMonthlySavings = apartmentPrice * monthlyRate / (Math.pow(1 + monthlyRate, months) - 1);
+            
+            // Текущие накопления из бюджета
+            const currentSavings = 85000 * (parseFloat(document.getElementById('savings').value) / 85000);
+            
+            let resultHTML = '<h3><i class="fas fa-home"></i> Результат плана накоплений:</h3>';
+            
+            resultHTML += '<div class="highlight">';
+            resultHTML += '<p><i class="fas fa-calculator"></i> <strong>Необходимо откладывать ежемесячно:</strong> ' + requiredMonthlySavings.toFixed(0) + ' ₽</p>';
+            resultHTML += '<p><i class="fas fa-wallet"></i> <strong>Ваши текущие накопления:</strong> ' + currentSavings.toFixed(0) + ' ₽</p>';
+            resultHTML += '</div>';
+            
+            if (currentSavings >= requiredMonthlySavings) {
+                resultHTML += '<div class="success"><i class="fas fa-check-circle"></i> Отлично! Ваших текущих накоплений достаточно для достижения цели.</div>';
+                savingsScore = 10;
+            } else {
+                const shortage = requiredMonthlySavings - currentSavings;
+                resultHTML += '<div class="warning"><i class="fas fa-exclamation-triangle"></i> Ваших текущих накоплений НЕ достаточно. Необходимо дополнительно ' + shortage.toFixed(0) + ' ₽ в месяц.</div>';
+                savingsScore = Math.max(10 - (shortage / 10000), 0);
+            }
+            
+            document.getElementById('savings-result').innerHTML = resultHTML;
+            
+            // Переходим к следующему вопросу после проверки
+            setTimeout(() => {
+                showScreen('question-4');
+            }, 2000);
+        }
+        
+        // Вопрос 4: Выбор варианта
+        function selectOption(option) {
+            const mortgageDetails = document.getElementById('mortgage-details');
+            if (option === 'mortgage') {
+                mortgageDetails.style.display = 'block';
+            } else {
+                mortgageDetails.style.display = 'none';
+            }
+        }
+        
+        // Вопрос 4: Проверка решения по ипотеке
+        function checkMortgageDecision() {
+            const apartmentPrice = parseFloat(document.getElementById('apartment-price').value) || 0;
+            const downPayment = parseFloat(document.getElementById('down-payment').value) || 0;
+            const mortgageYears = parseFloat(document.getElementById('mortgage-years').value) || 0;
+            const annualRate = 0.13; // 13%
+            
+            const loanAmount = apartmentPrice - downPayment;
+            const monthlyRate = annualRate / 12;
+            const months = mortgageYears * 12;
+            
+            // Формула аннуитетного платежа
+            const monthlyPayment = loanAmount * monthlyRate * Math.pow(1 + monthlyRate, months) / (Math.pow(1 + monthlyRate, months) - 1);
+            const totalPayment = monthlyPayment * months;
+            const overpayment = totalPayment - loanAmount;
+            
+            let resultHTML = '<h3><i class="fas fa-balance-scale"></i> Результат решения по ипотеке:</h3>';
+            
+            resultHTML += '<div class="highlight">';
+            resultHTML += '<p><i class="fas fa-receipt"></i> <strong>Ежемесячный платеж:</strong> ' + monthlyPayment.toFixed(0) + ' ₽</p>';
+            resultHTML += '<p><i class="fas fa-chart-line"></i> <strong>Общая переплата:</strong> ' + overpayment.toFixed(0) + ' ₽</p>';
+            resultHTML += '<p><i class="fas fa-money-bill-wave"></i> <strong>Общая сумма выплат:</strong> ' + totalPayment.toFixed(0) + ' ₽</p>';
+            resultHTML += '</div>';
+            
+            // Оценка решения
+            if (monthlyPayment > 85000 * 0.4) { // Более 40% дохода
+                resultHTML += '<div class="warning"><i class="fas fa-exclamation-triangle"></i> Ипотечный платеж составляет более 40% дохода - это высокий риск!</div>';
+                mortgageScore = 3;
+            } else if (monthlyPayment > 85000 * 0.35) { // 35-40% дохода
+                resultHTML += '<div class="highlight"><i class="fas fa-info-circle"></i> Ипотечный платеж составляет 35-40% дохода - на грани допустимого.</div>';
+                mortgageScore = 5;
+            } else {
+                resultHTML += '<div class="success"><i class="fas fa-check-circle"></i> Ипотечный платеж составляет менее 35% дохода - это приемлемый уровень.</div>';
+                mortgageScore = 8;
+            }
+            
+            document.getElementById('mortgage-result').innerHTML = resultHTML;
+            
+            // Переходим к следующему вопросу после проверки
+            setTimeout(() => {
+                showScreen('question-5');
+            }, 2000);
+        }
+        
+        // Вопрос 5: Проверка нового плана
+        function checkNewPlan() {
+            const newIncome = parseFloat(document.getElementById('new-income').value) || 0;
+            const newSavingsPercent = parseFloat(document.getElementById('new-savings-percent').value) || 0;
+            const investmentOption = document.getElementById('investment-option').value;
+            
+            const newSavings = newIncome * newSavingsPercent / 100;
+            
+            // Расчет накоплений за оставшиеся 4 года и 7 месяцев (55 месяцев)
+            let annualRate;
+            switch(investmentOption) {
+                case 'no': annualRate = 0.09; break;
+                case 'conservative': annualRate = 0.11; break;
+                case 'balanced': annualRate = 0.13; break;
+                case 'aggressive': annualRate = 0.16; break;
+            }
+            
+            const monthlyRate = annualRate / 12;
+            const remainingMonths = 55;
+            
+            // Будущая стоимость накоплений
+            const futureValue = newSavings * (Math.pow(1 + monthlyRate, remainingMonths) - 1) / monthlyRate;
+            const apartmentPrice = parseFloat(document.getElementById('apartment-price').value) || 0;
+            
+            let resultHTML = '<h3><i class="fas fa-chart-line"></i> Результат нового финансового план:</h3>';
+            
+            resultHTML += '<div class="highlight">';
+            resultHTML += '<p><i class="fas fa-money-bill-wave"></i> <strong>Новый доход:</strong> ' + newIncome.toFixed(0) + ' ₽/мес</p>';
+            resultHTML += '<p><i class="fas fa-piggy-bank"></i> <strong>Новые накопления:</strong> ' + newSavings.toFixed(0) + ' ₽/мес (' + newSavingsPercent + '%)</p>';
+            resultHTML += '<p><i class="fas fa-chart-bar"></i> <strong>Стратегия инвестиций:</strong> ' + 
+                (investmentOption === 'no' ? 'Только депозит' : 
+                 investmentOption === 'conservative' ? 'Консервативная' :
+                 investmentOption === 'balanced' ? 'Сбалансированная' : 'Агрессивная') + '</p>';
+            resultHTML += '<p><i class="fas fa-percentage"></i> <strong>Прогнозируемая доходность:</strong> ' + (annualRate * 100).toFixed(1) + '% годовых</p>';
+            resultHTML += '<p><i class="fas fa-home"></i> <strong>Прогнозируемая сумма накоплений:</strong> ' + futureValue.toFixed(0) + ' ₽</p>';
+            resultHTML += '</div>';
+            
+            // Оценка нового плана
+            if (newSavingsPercent >= 20) {
+                resultHTML += '<div class="success"><i class="fas fa-check-circle"></i> Отлично! Вы откладываете 20% или более от дохода.</div>';
+                newPlanScore = 5;
+            } else if (newSavingsPercent >= 15) {
+                resultHTML += '<div class="highlight"><i class="fas fa-info-circle"></i> Хорошо! Вы откладываете 15% от дохода.</div>';
+                newPlanScore = 4;
+            } else {
+                resultHTML += '<div class="warning"><i class="fas fa-exclamation-triangle"></i> Рекомендуется увеличить накопления до 15-20% от дохода.</div>';
+                newPlanScore = 2;
+            }
+            
+            if (futureValue >= apartmentPrice) {
+                resultHTML += '<div class="success"><i class="fas fa-check-circle"></i> Поздравляем! С новым планом вы сможете накопить на квартиру!</div>';
+                newPlanScore += 5;
+            } else {
+                resultHTML += '<div class="warning"><i class="fas fa-exclamation-triangle"></i> Даже с новым планом накопить на квартиру не получится. Рассмотрите ипотеку или увеличение срока накопления.</div>';
+                newPlanScore += 2;
+            }
+            
+            if (investmentOption !== 'no') {
+                resultHTML += '<div class="success"><i class="fas fa-check-circle"></i> Хорошее решение диверсифицировать инвестиции!</div>';
+                newPlanScore += 2;
+            }
+            
+            document.getElementById('new-plan-result').innerHTML = resultHTML;
+            
+            // Переходим к финальному экрану после проверки
+            setTimeout(() => {
+                calculateFinalOutcome();
+                showScreen('final-screen');
+            }, 2000);
+        }
+        
+        // Расчет итогового результата
+        function calculateFinalOutcome() {
+            const totalScore = budgetScore + crisisScore + savingsScore + mortgageScore + newPlanScore;
+            const maxScore = 50;
+            const percentage = (totalScore / maxScore) * 100;
+            
+            // Обновляем статистику на финальном экране
+            document.getElementById('final-score').textContent = totalScore;
+            document.getElementById('success-rate').textContent = percentage.toFixed(0) + '%';
+            document.getElementById('budget-score').textContent = budgetScore;
+            document.getElementById('crisis-score').textContent = crisisScore;
+            
+            // Обновляем прогресс-бар
+            document.getElementById('final-progress').style.width = percentage + '%';
+            
+            const outcomeElement = document.getElementById('final-outcome');
+            let outcomeHTML = '';
+            
+            if (percentage >= 80) {
+                outcomeHTML = '<div class="good-outcome"><i class="fas fa-trophy"></i><br>Отличный результат!<br><small>Вы отлично справились с финансовым планированием!</small></div>';
+            } else if (percentage >= 60) {
+                outcomeHTML = '<div class="good-outcome"><i class="fas fa-medal"></i><br>Хороший результат!<br><small>Вы на правильном пути, но есть возможности для улучшения.</small></div>';
+            } else if (percentage >= 40) {
+                outcomeHTML = '<div class="bad-outcome"><i class="fas fa-award"></i><br>Удовлетворительный результат.<br><small>Вам нужно серьезнее подойти к финансовому планированию.</small></div>';
+            } else {
+                outcomeHTML = '<div class="bad-outcome"><i class="fas fa-exclamation-triangle"></i><br>Плохой результат.<br><small>Рекомендуется пересмотреть свой финансовый план.</small></div>';
+            }
+            
+            outcomeElement.innerHTML = outcomeHTML;
+            
+            // Генерируем рекомендации
+            let recommendations = '';
+            if (budgetScore < 6) {
+                recommendations += '<li>Уделите больше внимания планированию бюджета</li>';
+            }
+            if (crisisScore < 6) {
+                recommendations += '<li>Разработайте более надежный антикризисный план</li>';
+            }
+            if (savingsScore < 6) {
+                recommendations += '<li>Увеличьте процент накоплений для достижения целей</li>';
+            }
+            if (mortgageScore < 6) {
+                recommendations += '<li>Изучите условия ипотеки более внимательно</li>';
+            }
+            if (newPlanScore < 6) {
+                recommendations += '<li>Рассмотрите варианты инвестирования для увеличения доходности</li>';
+            }
+            
+            if (recommendations === '') {
+                recommendations = '<li>Продолжайте в том же духе! Вы отлично управляете финансами</li>';
+            }
+            
+            document.getElementById('recommendations').innerHTML = '<ul style="padding-left: 20px; margin-top: 10px;">' + recommendations + '</ul>';
+        }
+        
+        // Инициализация при загрузке страницы
+        window.onload = function() {
+            // Уже на главном экране
+        };
+        
+        // Добавляем обработчики для всех кнопок для дополнительной отзывчивости
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(button => {
+                button.addEventListener('touchstart', function() {
+                    this.style.transform = 'translateY(2px)';
+                    this.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+                });
+                
+                button.addEventListener('touchend', function() {
+                    this.style.transform = '';
+                    this.style.boxShadow = '';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
