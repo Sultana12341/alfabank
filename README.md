@@ -1,4 +1,3 @@
-[игра2.html](https://github.com/user-attachments/files/23147877/2.html)
 <!DOCTYPE html>
 <html lang="ru">
 <head>
